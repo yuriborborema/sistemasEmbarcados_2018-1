@@ -1,7 +1,6 @@
-module display(input number,
-							 output seg);
-	reg [3:0] number;
-	reg [7:0] seg;
+module display(number,seg);
+	input [3:0] number;
+   output reg [7:0] seg;
 
 	// Referencia: https://github.com/thiagohenrique1/verilog_aula/blob/master/project/seven_seg.v
 	always @ (number) begin
