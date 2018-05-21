@@ -1,8 +1,9 @@
-module ULA(input a,b,op,clock
-					 output result);
+module ULA(input a,b,op,clock,
+	  			 output result);
 
-	reg [8:0] a,b,result;
-	reg [0:3] op;
+	wire [8:0] a,b;
+	reg [8:0] result;
+	wire [3:0] op;
 
 	parameter sum=0,sub=1,mult=2,div=3;	
 	

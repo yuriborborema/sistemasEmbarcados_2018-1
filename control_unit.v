@@ -1,11 +1,12 @@
-`include "ULA.V"
+`include "ULA.v"
 `include "display.v"
 
-module control_unit(SW,HEX0,HEX1,HEX2,HEX3,CLOCK_50); // chaves,a,b,op,result 
-
-	reg [8:0] a,b;
+module control_unit(HEX0,HEX1,HEX2,HEX3,CLOCK_50,KEY); // a,b,op,result
+	
+	output [7:0] HEX0,HEX1,HEX2,HEX3;
+	input [3:0] KEY;
+	reg [7:0] a,b;
 	reg [3:0] op = 0;
-	reg [7:0] seg;
 	wire result;	
 
 	ULA ULA(
@@ -16,40 +17,42 @@ module control_unit(SW,HEX0,HEX1,HEX2,HEX3,CLOCK_50); // chaves,a,b,op,result
 		.clock(CLOCK_50)
 	);	
 
-	display display(
+	display displayA(
+		.number(a),
+		.seg(HEX1)
+	);
+
+	display displayB(
+		.number(b),
+		.seg(HEX2)
+	);
+
+	display displayOp(
+		.number(op),
+		.seg(HEX0)
+	);
+
+	display displayResult(
 		.number(result),
-		.seg(seg)
+		.seg(HEX3)
 	);
 
 	// Botão que determina a operação
-	always @ (BUTTON1) begin 
+	always @ (posedge KEY[0]) begin 
 		if(op < 4) op <= op + 1 ;
 		else op <= 0;
-		seg <= SW[0];
-		number <= op; 
 	end
 	
 	// Botão que determina primeiro valor
-	always @ (BUTTON2) begin 
+	always @ (posedge KEY[1]) begin 
 		if(op < 10) a <= a + 1 ;
 		else a <= 0;
-		seg <= SW[1];
-		number <= a;
 	end 
 
 	// Botão que determina segundo valor 
-	always @ (BUTTON3) begin 
+	always @ (posedge KEY[2]) begin 
 		if(b < 10) b <= b + 1 ;
 		else b <= 0;
-		seg <= SW[2];
-		number <= b;
 	end
 
-	// Mostra o resultado 
-	always @ (*) begin
-		seg <= SW[3];
-		number <= resultado;
-	end
-	
-endmodule
-	
+endmodule	
