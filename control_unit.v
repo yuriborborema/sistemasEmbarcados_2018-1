@@ -1,5 +1,5 @@
-module control_unit(HEX0,HEX1,HEX2,HEX3,KEY); // a,b,op,result
-	
+module control_unit(HEX0,HEX1,HEX2,HEX3,KEY); 
+
 	output [7:0] HEX0,HEX1,HEX2,HEX3;
 	input [1:0] KEY;
 	reg [3:0] a,b;
