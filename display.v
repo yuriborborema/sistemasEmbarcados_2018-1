@@ -1,6 +1,6 @@
 module display(number,seg);
 	input [3:0] number;
-   output reg [7:0] seg;
+    output reg [7:0] seg;
 
 	// Referencia: https://github.com/thiagohenrique1/verilog_aula/blob/master/project/seven_seg.v
 	always @ (number) begin
@@ -15,11 +15,11 @@ module display(number,seg);
 			4'h7: seg = 8'hf8;
 			4'h8: seg = 8'h80;
 			4'h9: seg = 8'h90;
-			4'ha: seg = 8'h88;
-			4'hb: seg = 8'h83;
-			4'hc: seg = 8'hc6;
-			4'hd: seg = 8'ha1;
-			4'he: seg = 8'h86;
+			//4'ha: seg = 8'h88;
+			//4'hb: seg = 8'h83;
+			//4'hc: seg = 8'hc6;
+			//4'hd: seg = 8'ha1;
+			//4'he: seg = 8'h86;
 			4'hf: seg = 8'h8e;
 		endcase
 	end
