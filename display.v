@@ -20,7 +20,7 @@ module display(number,seg);
 			//4'hc: seg = 8'hc6;
 			//4'hd: seg = 8'ha1;
 			//4'he: seg = 8'h86;
-			4'hf: seg = 8'h8e;
+			4'hf: seg = 8'b 10111111;
 		endcase
 	end
 endmodule 

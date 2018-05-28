@@ -1,4 +1,4 @@
-module ULA(a,b,op,result);
+module ULA(a,b,op,result1,result2);
 
 	input [3:0] a,b;
 	input [1:0] op;
@@ -10,35 +10,72 @@ module ULA(a,b,op,result);
 		case(op) 
 			sum: 
 			begin 
-				result1 <= a + b;
-				if((a+b) == 20) result2 <= 2;
-				else if ((a+b) > 10) result2 <= 1;
-				else result2 <= 0;
+				if ((a+b) <= 9) begin 
+					result1 <= a + b;
+					result2 <= 0;				
+				end else begin
+					result1 <= a + b - 10;
+					result2 <= 1;					
+				end  
 			end 
 			sub: 
 			begin
-				if(a > b) result1 <= a - b;
+				if(a > b) begin
+					result1 <= a - b;
+					result2 <= 0;
+				end
 				else begin 
 					result1 <= b - a;
 					result2 <= 15;
 				end
 			end
 			mult: 
-			begin
-				result1 <= a * b;
-				if((a+b) > 90) result2 <= 9;
-				else if ((a*b) > 80) result2 <= 8;
-				else if ((a*b) > 70) result2 <= 7;
-				else if ((a*b) > 60) result2 <= 6;
-				else if ((a*b) > 50) result2 <= 5;
-				else if ((a*b) > 40) result2 <= 4;
-				else if ((a*b) > 30) result2 <= 3;
-				else if ((a*b) > 20) result2 <= 2;
-				else if ((a*b) > 10) result2 <= 1;
+			begin				
+				if((a+b) >= 90) begin 
+					result1 <= a * b - 90;
+					result2 <= 9;
+				end 
+				else if ((a*b) >= 80) begin 
+					result1 <= a * b - 80;
+					result2 <= 8;
+				end else if ((a*b) >= 70) begin 
+					result1 <= a * b - 70;
+					result2 <= 7;
+				end 
+				else if ((a*b) >= 60) begin 
+					result1 <= a * b - 60;
+					result2 <= 6;
+				end 
+				else if ((a*b) >= 50) begin 
+					result1 <= a * b - 50;
+					result2 <= 5;
+				end 
+				else if ((a*b) >= 40) begin 
+					result1 <= a * b - 40;
+					result2 <= 4;
+				end 
+				else if ((a*b) >= 30) begin 
+					result1 <= a * b - 30;
+					result2 <= 3;
+				end 
+				else if ((a*b) >= 20) begin 
+					result1 <= a * b - 20;
+					result2 <= 2;
+				end 
+				else if ((a*b) >= 10) begin 
+					result1 <= a * b - 10;
+					result2 <= 1;
+				end 
 				else result2 <= 0;				
 			end
-			div: result <= a/b;
-			default: result <= 0;
+			div: begin 
+				result1 <= a/b;
+				result2 <= 0;
+			end
+			default: begin 
+				result1 <= 0;
+				result2 <= 0;
+			end
 		endcase
 	end
 endmodule

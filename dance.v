@@ -1,7 +1,7 @@
 module dance(SW,Clock,led);
 
 	input Clock;
-	input [3:0] SW;
+	input [17:0] SW;
 	output reg [17:0] led;
 	reg [25:0] slow_count;
 	reg [5:0] position;
@@ -13,16 +13,16 @@ module dance(SW,Clock,led);
 		
 	always @ (posedge Clock) begin
 		if (slow_count == 0) begin
-			if(SW[0]==1) begin				
-				//if(position < 18) begin
-				//	if(position != 0) led[position - 1] <= 0;
-				//	led[2] <= 1;
-				//	position <= position + 1;
-				//end else
-				//	led[position] <= 0;
-				//	position <= 0;				
-				//end
-				
-			end
+			if(SW[4]==1) begin	
+				if(position < 18) begin
+					if(position != 0) led[position - 1] <= 0;
+					led[position] <= 1;
+					position <= position + 1;
+				end else begin
+					led[position] <= 0;
+					position <= 0;	
+				end
+			end else led[6] <= 1;
 		end
+	end	
 endmodule 
