@@ -1,21 +1,24 @@
-module dance(SW,Clock,led);
+module dance(SW,Clock,led,position);
 
 	input Clock;
-	input [17:0] SW;
-	output reg [17:0] led;
+	input [3:0] SW; // input [17:0] SW;
+	reg way;  // Determina o sentido de rotação dos leds
 	reg [24:0] slow_count;
-	reg [5:0] position;
-	reg flag; // Determina o sentido de rotação dos leds
+	output reg [4:0] position;
+	output reg [17:0] led;
 	
-	parameter left=0,right=1;
+	/*Remover depois*/
+	initial begin 
+		position <= 0;
+		way <= 0;
+	end
 		
-	always @(posedge Clock)
-		slow_count <= slow_count + 1'b1;
+	//always @(posedge Clock)	slow_count <= slow_count + 1'b1;
 		
 	always @ (posedge Clock) begin
-		if (slow_count == 0) begin
+		//if (slow_count == 0) begin
 			// Direita para esquerda
-			if(SW[0] == 1) begin	
+			if(SW == 0) begin//if(SW[0] == 1) begin	
 				if(position < 18) begin
 					if(position != 0) led[position - 1] <= 0;
 					led[position] <= 1;
@@ -25,7 +28,7 @@ module dance(SW,Clock,led);
 					position <= 0;	
 				end
 			// Esquerda para direita
-			end else if(SW[1] == 1) begin	
+			end else if(SW == 1) begin	
 				if(position > 0) begin
 					if(position != 17) led[position + 1] <= 0;
 					led[position] <= 1;
@@ -36,21 +39,22 @@ module dance(SW,Clock,led);
 				end
 			end
 			// Vai e volta 
-			end else if(SW[2] == 1) begin	
+			else if(SW == 2) begin//else if(SW[2] == 1) begin	
 				if(position > 0 & position < 17) begin					
 					led[position] <= 1;
-					if(way == left) begin
+					if(way == 0) begin
 						if(position != 0) led[position - 1] <= 0;
 						led[position] <= 1;
 						position <= position + 1;
-					end else if(way == right) begin
+					end else if(way == 1) begin
 						if(position != 17) led[position + 1] <= 0;
 						led[position] <= 1;
 						position <= position - 1;
 					end
-				end else if(position == 0) way = left;
-				else if (position == 17) way == right;			
+				end 
+				else if (position == 0 ) way <= 0;
+				else if (position == 17) way <= 1;			
 			end			
 		end
-	end	
+	//end	
 endmodule 
