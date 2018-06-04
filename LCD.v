@@ -14,6 +14,7 @@ assign LCD_DataBus = {1'b0, RxD_data[6:0]};   // sends only 7 bits to the module
 assign LCD_RW = 0;
 
 reg [2:0] count;
+
 always @(posedge clk) 
 	if(RxD_data_ready | (count!=0)) 
 		count <= count + 1;
@@ -36,7 +37,11 @@ always @(posedge clk)
   WriteCommByte('e'+0x80);
   WriteCommByte('l'+0x80);
   WriteCommByte('l'+0x80);
-  WriteCommByte('o'+0x80); */
-
+  WriteCommByte('o'+0x80); 
+  
+  https://www.fpga4fun.com/TextLCDmodule.html
+  http://www.dinceraydin.com/lcd/commands.htm
+  
+*/
 
 endmodule
