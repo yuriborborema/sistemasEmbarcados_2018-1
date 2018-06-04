@@ -1,47 +1,22 @@
-module lcd(module LCDmodule(clk, RxD, LCD_RS, LCD_RW, LCD_E, LCD_DataBus);
+module lcd(module LCDmodule(CLOCK_50, LCD_RS_out, LCD_RW_out, LCD_E_out);
 
-input clk, RxD;
-output LCD_RS, LCD_RW, LCD_E;
-output [7:0] LCD_DataBus;
+input CLOCK_50;
+output LCD_RS_out, LCD_RW_out, LCD_E_out;
+output [7:0] LCD_Data_out;
 
-wire RxD_data_ready;
-wire [7:0] RxD_data;
+wire [7:0] LCD_data_in;
+wire [7:0] LCD_RS_in;
 
-
-assign LCD_RS = RxD_data[7];
-assign LCD_DataBus = {1'b0, RxD_data[6:0]};   // sends only 7 bits to the module, padded with a '0' in front to make 8 bits
 
 assign LCD_RW = 0;
+assign LCD_RS_out = LCD_RS_in;
+assign LCD_Data_out = LCD_data_in;
 
-reg [2:0] count;
-
-always @(posedge clk) 
-	if(RxD_data_ready | (count!=0)) 
-		count <= count + 1;
 
 reg LCD_E;
-always @(posedge clk) 
-	LCD_E <= (count!=0);
-	
-	
-	
-/* 	
-  // initialize the LCD module
-  WriteCommByte(0x38);   // "Function Set" in 8 bits mode
-  WriteCommByte(0x0F);   // "Display ON" with cursors ON
-  WriteCommByte(0x01);   // "Clear Display", can take up to 1.64ms, so the delay
-  Sleep(2);
-
-  // display "hello"
-  WriteCommByte('h'+0x80);
-  WriteCommByte('e'+0x80);
-  WriteCommByte('l'+0x80);
-  WriteCommByte('l'+0x80);
-  WriteCommByte('o'+0x80); 
-  
-  https://www.fpga4fun.com/TextLCDmodule.html
-  http://www.dinceraydin.com/lcd/commands.htm
-  
-*/
+always @(posedge clk) begin
+	LCD_E <= 1;
+	LCD_E <= 0;
+	end
 
 endmodule
