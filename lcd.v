@@ -1,23 +1,19 @@
-//module lcd(CLOCK_50, LCD_RS_out, LCD_RW_out, LCD_E_out);/
-//
-//	input CLOCK_50;
-//	output LCD_RS_out, LCD_RW_out, LCD_E_out;
-//	output [7:0] LCD_Data_out;/
+module lcd(clk, LCD_data_in, LCD_DATA, LCD_RS, LCD_RW, LCD_EN);
 
-//	wire [7:0] LCD_data_in;
-//	wire [7:0] LCD_RS_in;
-
-
-//	assign LCD_RW = 0;
-//	assign LCD_RS_out = LCD_RS_in;
-//	assign LCD_Data_out = LCD_data_in;
+	input clk; 
+	input [7:0]LCD_data_in;
+	output LCD_RS, LCD_RW;
+	output reg LCD_EN;
+	output [7:0] LCD_DATA;
 
 
-//	reg LCD_E;
+	assign LCD_RW = 0;
+	assign LCD_RS = 1;
+	assign LCD_DATA = LCD_data_in;
 
-//	always @(posedge clk) begin
-//		LCD_E <= 1;
-//		LCD_E <= 0;
-//	end
+	always @(posedge clk) begin
+		LCD_EN <= 1;
+		//LCD_E <= 0;
+	end
 
-//endmodule 
+endmodule 

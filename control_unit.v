@@ -1,16 +1,18 @@
-module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR);
-	
+module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_DATA, LCD_RS, LCD_RW, LCD_EN);
 	input [17:0] SW;
 	input [3:0] KEY;
 	input CLOCK_50;
+	input [7:0]LCD_DATA; 
+	input LCD_RS, LCD_RW, LCD_EN;
 	reg [3:0] a,b;
 	reg [1:0] op;
 	wire [3:0] result1,result2;
 	output [7:0] HEX0,HEX1,HEX2,HEX4,HEX5;
-	output [17:0] LEDR;	
+	output [17:0] LEDR;
 	
-	//reg [7:0] LCD_data_in = 8'h61; // conferir esta instanciacao
-	//reg LCD_RS_in = 0;
+	
+	reg [7:0] dataAux = 8'h61;
+
 	
 
 	ULA ULA(
@@ -53,12 +55,14 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR);
 		.seg(HEX5)
 	);
 	
-	//lcd lcd(
-	//	.CLOCK_50(CLOCK_50), 
-	//	.LCD_RS_out(), 
-	//	.LCD_RW_out(), 
-	//	.LCD_E_out()
-	//);
+	lcd lcd(
+		.clk(CLOCK_50), 
+		.LCD_data_in(dataAux),
+		.LCD_DATA(LCD_DATA),
+		.LCD_RS(LCD_RS),
+		.LCD_RW(LCD_RW),
+		.LCD_EN(LCD_EN)
+	);
 
 	// Botão que determina a operação
 	always @ (posedge KEY[0]) begin 
@@ -90,8 +94,12 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR);
 	//	LCD_RS_in <= 0;
 	//	if(LCD_data_in==8'h0B) LCD_data_in <=8'h40;
 	//	else if(LCD_data_in==8'h40) LCD_data_in <= LCD_data_in+1;
-	//	else LCD_data_in <= LCD_data_in+1;
+	//else LCD_data_in <= LCD_data_in+1;
 	//end
+	
+	always @ (posedge CLOCK_50) begin
+		dataAux <= dataAux+1;
+	end
 	
 
 endmodule 
