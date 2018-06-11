@@ -1,14 +1,15 @@
-`include "ULA.v"
-`include "dance.v"
+`include "ULA_tb.v"
+`include "dance_tb.v"
 
 module test_banch();
 
 	reg clock;	
-	reg [3:0] a,b,SW;
+	reg [7:0] a,b;
+	reg [3:0] SW;
 	reg [1:0] op;
-	wire [3:0] result1,result2;
+	wire [7:0] result1,result2;
 	wire [4:0] position;
-	wire [17:0] LEDR;	
+	//wire [17:0] LEDR;	
 
 	ULA ULA(
 		.a(a),
@@ -19,7 +20,7 @@ module test_banch();
 	);
 
 	dance dance(
-		.led(LEDR),
+		//.led(LEDR),
 		.SW(SW),
 		.Clock(clock),
 		.position(position)
@@ -41,10 +42,8 @@ module test_banch();
 		#500 op = 2; // mult
 		#500 op = 3; // div		
 	
-		#100 SW = 1; // Decrescente
-		
-		
-
+		#100 SW = 1; // Decrescente		
+		#100 SW = 2; // Vai e volta
 		#2000  $finish;		
 	end
 	
