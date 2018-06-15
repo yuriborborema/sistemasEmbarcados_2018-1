@@ -6,9 +6,14 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON, LCD_B
 	reg [7:0] a,b;
 	reg [1:0] op;
 	wire [7:0] result1,result2;
-	output LCD_BLON, LCD_ON;
 	output [7:0] HEX0,HEX1,HEX2,HEX4,HEX5;
-	output [17:0] LEDR;	
+	output [17:0] LEDR;
+	output LCD_ON,	LCD_BLON, LCD_RW, LCD_EN, LCD_RS;
+   inout [7:0] LCD_DATA;
+		
+		//ligando lcd
+	assign    LCD_ON   = 1'b1;
+	assign    LCD_BLON = 1'b1;
 	
 	ULA ULA(
 		.a(a),
@@ -50,9 +55,6 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON, LCD_B
 		.seg(HEX5)
 	);
 	
-	
-	assign    LCD_ON   = 1'b1;
-	assign    LCD_BLON = 1'b1;
 	
 		//lcd lcd(
 		//.clk(CLOCK_50), 

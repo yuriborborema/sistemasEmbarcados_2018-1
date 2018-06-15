@@ -1,5 +1,21 @@
 module lcd(clk, LCD_data_in, LCD_DATA, LCD_RS, LCD_RW, LCD_EN);
 
+
+
+
+reg [23:0] slow_count;
+
+
+
+
+
+always @(posedge Clock)	slow_count <= slow_count + 1'b1;
+
+
+
+
+
+
 	input clk; 
 	input [7:0]LCD_data_in;
 	output LCD_RW;
