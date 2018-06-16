@@ -1,70 +1,77 @@
-module lcd(clk, LCD_data_in, LCD_DATA, LCD_RS, LCD_RW, LCD_EN);
+module lcd(
+	input [7:0] iDATA,
+	input iRS,
+	input iStart,
+	output reg oDone,
+	input iCLK,iRST_N,
+	//	LCD Interface
+	output [7:0] LCD_DATA,
+	output LCD_RW,
+	output reg LCD_EN,
+	output LCD_RS	);
 
 
 
 
-reg [23:0] slow_count;
+parameter	CLK_Divide	=	16;
 
+//	Internal Register
+reg		[4:0]	Cont;
+reg		[1:0]	ST;
+reg		preStart,mStart;
 
+/////////////////////////////////////////////
+//	Only write to LCD, bypass iRS to LCD_RS
+assign	LCD_DATA	=	iDATA; 
+assign	LCD_RW		=	1'b0;
+assign	LCD_RS		=	iRS;
+/////////////////////////////////////////////
 
-
-
-always @(posedge Clock)	slow_count <= slow_count + 1'b1;
-
-
-
-
-
-
-	input clk; 
-	input [7:0]LCD_data_in;
-	output LCD_RW;
-	output reg LCD_EN, LCD_RS;
-	output reg[7:0] LCD_DATA;
-
-
-	assign LCD_RW = 0;
-	
-	reg [1:0] estado_atual;
-	parameter init_FS = 0, init_D=1, clear = 2, writ_com = 3, writ_data = 4;
-
-	
-	//assign LCD_DATA = LCD_data_in;
-	
-	always @(posedge clk)begin
-		      case (estado_atual)
-       init_FS: begin
-					 LCD_RS = 0;
-                LCD_DATA = 8'h38;
-					 estado_atual <= init_D;
-               end               
-       init_D: begin
-                LCD_DATA = 8'h0F;
-					 estado_atual <= clear;
-               end
-       clear: begin
-                LCD_DATA = 8'h01;
-					 estado_atual <= writ_data;
-               end
-       writ_data: begin
-					 LCD_RS= 1;
-                LCD_DATA = LCD_data_in;
-					 
-               end					
-      endcase 
+always@(posedge iCLK or negedge iRST_N)
+begin
+	if(!iRST_N)
+	begin
+		oDone	<=	1'b0;
+		LCD_EN	<=	1'b0;
+		preStart<=	1'b0;
+		mStart	<=	1'b0;
+		Cont	<=	0;
+		ST		<=	0;
 	end
-	
-	
-	reg [2:0] count;
-	always @(posedge clk) begin
-	
-	//case(LCD_data_in==8'h38)
-	
-	if(count!=0) count <= count + 1;
+	else
+	begin
+		//////	Input Start Detect ///////
+		preStart<=	iStart;
+		if({preStart,iStart}==2'b01)
+		begin
+			mStart	<=	1'b1;
+			oDone	<=	1'b0;
+		end
+		//////////////////////////////////
+		if(mStart)
+		begin
+			case(ST)
+			0:	ST	<=	1;	//	Wait Setup
+			1:	begin
+					LCD_EN	<=	1'b1;
+					ST		<=	2;
+				end
+			2:	begin					
+					if(Cont<CLK_Divide)
+					Cont	<=	Cont + 1'b1;
+					else
+					ST		<=	3;
+				end
+			3:	begin
+					LCD_EN	<=	1'b0;
+					mStart	<=	1'b0;
+					oDone	<=	1'b1;
+					Cont	<=	0;
+					ST		<=	0;
+				end
+			endcase
+		end
 	end
-	
-	always @(posedge clk) begin
-		LCD_EN <= (count!=0);
-	end
+end
 
-endmodule 
+endmodule
