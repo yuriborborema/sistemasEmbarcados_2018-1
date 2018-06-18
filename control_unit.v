@@ -84,7 +84,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 	);
 	
 	
-	// Botão que determina a operação
+	// BotÃ£o que determina a operaÃ§Ã£o
 	always @ (posedge KEY[0]) begin 
 		op <= op + 1 ;
 		
@@ -98,7 +98,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			endcase
 	end
 	
-	// Botão que determina primeiro valor
+	// BotÃ£o que determina primeiro valor
 	always @ (posedge KEY[2]) begin 
 		if(a < 9) a <= a + 1 ;
 		else a <= 0;
@@ -119,7 +119,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 		
 	end 
 
-	// Botão que determina segundo valor 
+	// BotÃ£o que determina segundo valor 
 	always @ (posedge KEY[1]) begin 
 		if(b < 9) b <= b + 1 ;
 		else b <= 0;
@@ -141,15 +141,15 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 	
 	
 	////////////////////////lcd
-	  /// SW[17]: controla 'opção confirma', se
-	  ///             = 1(SW[15] = 1 & SW[16] = 0); pressionar KEy[3] avança o cursor
+	  /// SW[17]: controla 'opÃ§Ã£o confirma', se
+	  ///             = 1(SW[15] = 1 & SW[16] = 0); pressionar KEy[3] avanÃ§a o cursor
 	  /// SW[16]: controla obter dados da ula, se
 	  /// 			  = 1(SW[15] = 1 & SW[17] = 0); pressionar KEY[3] limpa a tela e apresenta resultados da ula
 	  /// SW[15]: controla iniciar o display, ligar o cursor e escrever; se
 	  ///             = 0(e demais SW = 0); inicia o display e liga cursor underline
 	  /// 			  = 1(e demais SW = 0); preparado para escrever 
 	  ///
-	  /// caso contrario, qualquer outra combinação, não faz nada.
+	  /// caso contrario, qualquer outra combinaÃ§Ã£o, nÃ£o faz nada.
 	  ///
 	  /// mais info : http://www.dinceraydin.com/lcd/commands.htm
 	  ///
@@ -249,7 +249,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//volta o cursor pra posição anterior
+			//volta o cursor pra posiÃ§Ã£o anterior
 			case(mLCD_ST)
 				0:	begin			
 					LUT_DATA <=	9'h010;
@@ -354,7 +354,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//avança
+			//avanÃ§a
 			case(mLCD_ST)
 				0:	begin
 					LUT_DATA <= 9'h014;
@@ -405,7 +405,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//avança
+			//avanÃ§a
 			case(mLCD_ST)
 				0:	begin
 					LUT_DATA <= 9'h014;
@@ -456,7 +456,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//avança
+			//avanÃ§a
 			case(mLCD_ST)
 				0:	begin
 					LUT_DATA <= 9'h014;
@@ -508,7 +508,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//avança
+			//avanÃ§a
 			case(mLCD_ST)
 				0:	begin
 					LUT_DATA <= 9'h014;
@@ -534,24 +534,23 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//escreve result1
-					case (result1)
-						0:LUT_DATA_res1 <= 9'h130;
-						1:LUT_DATA_res1 <= 9'h131;
-						2:LUT_DATA_res1 <= 9'h132;
-						3:LUT_DATA_res1 <= 9'h133;
-						4:LUT_DATA_res1 <= 9'h134;
-						5:LUT_DATA_res1 <= 9'h135;
-						6:LUT_DATA_res1 <= 9'h136;
-						7:LUT_DATA_res1 <= 9'h137;
-						8:LUT_DATA_res1 <= 9'h138;
-						9:LUT_DATA_res1 <= 9'h139;
+			//escreve result2
+					case (result2)
+						0:LUT_DATA_res2 <= 9'h130;
+						1:LUT_DATA_res2 <= 9'h131;
+						2:LUT_DATA_res2 <= 9'h132;
+						3:LUT_DATA_res2 <= 9'h133;
+						4:LUT_DATA_res2 <= 9'h134;
+						5:LUT_DATA_res2 <= 9'h135;
+						6:LUT_DATA_res2 <= 9'h136;
+						7:LUT_DATA_res2 <= 9'h137;
+						8:LUT_DATA_res2 <= 9'h138;
+						9:LUT_DATA_res2 <= 9'h139;
 					endcase
 			
 			case(mLCD_ST)
 				0:	begin
-					LUT_DATA <= 9'h13D;
-					mLCD_DATA	<=	LUT_DATA_res1[7:0];
+					mLCD_DATA	<=	LUT_DATA_res2[7:0];
 					mLCD_RS		<=	LUT_DATA_res2[8];
 					mLCD_Start	<=	1;
 					mLCD_ST		<=	1;
@@ -573,24 +572,24 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			mLCD_ST <=0;
 			mDLY <=0;
 			
-			//escreve result2
-			case (result2)
-						0:LUT_DATA_res2 <= 9'h130;
-						1:LUT_DATA_res2 <= 9'h131;
-						2:LUT_DATA_res2 <= 9'h132;
-						3:LUT_DATA_res2 <= 9'h133;
-						4:LUT_DATA_res2 <= 9'h134;
-						5:LUT_DATA_res2 <= 9'h135;
-						6:LUT_DATA_res2 <= 9'h136;
-						7:LUT_DATA_res2 <= 9'h137;
-						8:LUT_DATA_res2 <= 9'h138;
-						9:LUT_DATA_res2 <= 9'h139;
+			//escreve result1
+			case (result1)
+						0:LUT_DATA_res1 <= 9'h130;
+						1:LUT_DATA_res1 <= 9'h131;
+						2:LUT_DATA_res1 <= 9'h132;
+						3:LUT_DATA_res1 <= 9'h133;
+						4:LUT_DATA_res1 <= 9'h134;
+						5:LUT_DATA_res1 <= 9'h135;
+						6:LUT_DATA_res1 <= 9'h136;
+						7:LUT_DATA_res1 <= 9'h137;
+						8:LUT_DATA_res1 <= 9'h138;
+						9:LUT_DATA_res1 <= 9'h139;
 					endcase
 			
 			case(mLCD_ST)
 				0:	begin
-					mLCD_DATA	<=	LUT_DATA_res2[7:0];
-					mLCD_RS		<=	LUT_DATA_res2[8];
+					mLCD_DATA	<=	LUT_DATA_res1[7:0];
+					mLCD_RS		<=	LUT_DATA_res1[8];
 					mLCD_Start	<=	1;
 					mLCD_ST		<=	1;
 				end
