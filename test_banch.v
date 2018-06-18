@@ -1,5 +1,6 @@
 `include "ULA_tb.v"
 `include "dance_tb.v"
+`include "lcd_tb.v"
 
 module test_banch();
 
@@ -10,6 +11,15 @@ module test_banch();
 	wire [7:0] result1,result2;
 	wire [4:0] position;
 	//wire [17:0] LEDR;	
+	
+	reg [7:0] iDATA;
+	reg iRS;
+	reg iStart;
+	wire oDone;
+	wire [7:0] LCD_DATA;
+	wire LCD_RW;
+    wire LCD_EN;
+	wire LCD_RS;
 
 	ULA ULA(
 		.a(a),
@@ -25,6 +35,19 @@ module test_banch();
 		.Clock(clock),
 		.position(position)
 	);	
+	
+	lcd_tb lcd(
+		.iDATA(iDATA),
+		.iRS(iRS),
+		.iStart(iStart),
+		.iCLK(clock),
+		.oDone(oDone),
+		.LCD_DATA(LCD_DATA),
+		.LCD_RW(LCD_RW),
+		.LCD_EN(LCD_EN),
+		.LCD_RS(LCD_RS)
+	);
+	
 	
 	initial begin
 
@@ -44,6 +67,18 @@ module test_banch();
 	
 		#100 SW = 1; // Decrescente		
 		#100 SW = 2; // Vai e volta
+		
+		iDATA = 8'h0E;
+		iRS = 0;
+		#100 iStart = 1;
+		if(oDone==1)iStart=0;
+		
+		#500 iDATA = 8'h41;
+		iRS = 1;
+		#100 iStart = 1;
+		if(oDone==1)iStart=0;
+		
+		
 		#2000  $finish;		
 	end
 	
