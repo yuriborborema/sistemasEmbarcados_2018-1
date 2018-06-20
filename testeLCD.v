@@ -1,3 +1,7 @@
+//com este código mostramos que seja com o SW ou com o KEY, não é possivel estabelecer um padrão para garantir que ao apertar o
+// sw ele executará tal tarefa no visor. Tudo ainda sem nem depeder do clock. Essa falta de sincronização possivelmente é devido
+// algum atraso interno do lcd
+
 module testeLCD (CLOCK_50, SW, LCD_ON,	LCD_BLON, LCD_RW, LCD_EN, LCD_RS, LCD_DATA);
 	input CLOCK_50;
 	input [1:0] SW;
