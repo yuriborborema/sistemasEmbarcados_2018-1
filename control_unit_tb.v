@@ -1,4 +1,6 @@
-module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_BLON, LCD_RW, LCD_EN, LCD_RS, LCD_DATA);
+`include "lcd_tb2.v"
+`include "reset_delay_tb.v"
+module control_unit_tb(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_BLON, LCD_RW, LCD_EN, LCD_RS, LCD_DATA);
 	
 	input [17:0] SW;
 	input [3:0] KEY;
@@ -13,7 +15,8 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 		
 	// reset delay gives some time for peripherals to initialize
 	wire DLY_RST;
-	Reset_Delay r0(	.iCLK(CLOCK_50),.oRESET(DLY_RST) );	
+	Reset_Delay_tb r0(	.iCLK(CLOCK_50),.oRESET(DLY_RST) );	
+	//reg	[3:0]	Cont2;
 		
 	//ligando lcd
 	assign    LCD_ON   = 1'b1;
@@ -51,7 +54,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 		.result2(result2)
 	);		
 	
-	dance dance(
+	/*dance dance(
 		.led(LEDR),
 		.SW(SW),
 		.Clock(CLOCK_50)
@@ -81,7 +84,7 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 	display displayC(
 		.number(result2),
 		.seg(HEX5)
-	);
+	);*/
 	
 	
 	// BotÃ£o que determina a operaÃ§Ã£o
@@ -156,36 +159,60 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 	  /// obs thiago.: reg [5:0]lut_index;
 	////////////////////////
 	
-	always @ (posedge KEY[3])begin
+		/*always@(posedge CLOCK_50)
+			begin
+				if(Cont2!=4'hF)
+				begin
+					Cont2	<=	Cont2 + 1'b1;
+					DLY_RST	<=	1'b0;
+				end
+				else
+		DLY_RST	<=	1'b1;
+	end*/
+	
+	always @ (posedge CLOCK_50 or negedge DLY_RST)begin
 		
+		
+		if(!DLY_RST)
+		begin		
 		//auxiliares para delay necessarios pra escrita no lcd
 		mLCD_ST <=0;
 		mDLY <=0;
+		mLCD_Start<=0;
+		end
+		
+		else begin
 		
 		//// iniciando o display
 		if (SW[17] == 0 && SW[16] == 0 && SW[15] == 0)begin
-			LUT_DATA <= 9'h00E; 
+			//LUT_DATA <= 9'h00E; 
 			LUT_INDEX <= 0; 
 			
 			//bloco que escreve no lcd
 			case(mLCD_ST)
 				0:	begin
+					LUT_DATA <= 9'h00F;
+					mLCD_ST		<=	1;
+					end
+				1:  begin 
 					mLCD_DATA	<=	LUT_DATA[7:0];
 					mLCD_RS		<=	LUT_DATA[8];
 					mLCD_Start	<=	1;
-					mLCD_ST		<=	1;
+					mLCD_ST <=2;
 					end
-				1:  begin
+				2:  begin
                     if(mLCD_Done)
 						begin
 							mLCD_Start    <=    0;
-							mLCD_ST        <=    2;                    
+							mLCD_ST        <=    3;                    
 						end
 					end
-				2:  begin
+				3:  begin
 					if(mDLY<18'h3FFFE)
 						mDLY    <=    mDLY + 1'b1;
-                    else mDLY    <=    0;
+                    else begin mDLY    <=    0;
+						mLCD_ST<=0;
+						end
 					end
 			endcase
 		end
@@ -193,82 +220,91 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 		//// escolhendo as letras
 		if (SW[17] == 0 && SW[16] == 0 && SW[15] == 1)begin
 			
-			LUT_INDEX	<=	LUT_INDEX + 1'b1; 
-			if(LUT_INDEX == 26) LUT_INDEX <= 0;
-			else begin
-				case(LUT_INDEX)
-					//Initial
-				1:	LUT_DATA	<=	9'h141;
-				2:	LUT_DATA	<=	9'h142;
-				3:	LUT_DATA	<=	9'h143;
-				4:	LUT_DATA	<=	9'h144;
-				5:	LUT_DATA	<=	9'h145;
-				6:	LUT_DATA	<=	9'h146;
-				7:	LUT_DATA	<=	9'h147;
-				8:	LUT_DATA	<=	9'h148;
-				9:	LUT_DATA	<=	9'h149;
-				10:	LUT_DATA	<=	9'h14A;
-				11:	LUT_DATA	<=	9'h14B;
-				12:	LUT_DATA	<=	9'h14C;
-				13:	LUT_DATA	<=	9'h14E;
-				14:	LUT_DATA	<=	9'h14F;
-				15:	LUT_DATA	<=	9'h150;
-				16:	LUT_DATA	<=	9'h151;
-				17:	LUT_DATA	<=	9'h152;
-				18:	LUT_DATA	<=	9'h153;
-				19:	LUT_DATA	<=	9'h154;
-				20:	LUT_DATA	<=	9'h155;
-				21:	LUT_DATA	<=	9'h156;
-				22:	LUT_DATA	<=	9'h157;
-				23:	LUT_DATA	<=	9'h158;
-				24:	LUT_DATA	<=	9'h159;
-				25:	LUT_DATA	<=	9'h15A;				
-			endcase
-			end
-			case(mLCD_ST)
-				0:	begin
-					mLCD_DATA	<=	LUT_DATA[7:0];
-					mLCD_RS		<=	LUT_DATA[8];
-					mLCD_Start	<=	1;
-					mLCD_ST		<=	1;
-					end
-				1:  begin
-                    if(mLCD_Done)
-						begin
-							mLCD_Start    <=    0;
-							mLCD_ST        <=    2;                    
-						end
-					end
-				2:  begin
-					if(mDLY<18'h3FFFE)
-						mDLY    <=    mDLY + 1'b1;
-                    else mDLY    <=    0;
-					end
-			endcase
-			
 			mLCD_ST <=0;
-			mDLY <=0;
+			mDLY <=1;
 			
-			//volta o cursor pra posiÃ§Ã£o anterior
-			case(mLCD_ST)
-				0:	begin			
-					LUT_DATA <=	9'h010;
+			case (mLCD_ST)
+				0:begin
+					if(LUT_INDEX == 25) LUT_INDEX <= 1;
+					else LUT_INDEX	<=	LUT_INDEX + 1'b1; 
+					mLCD_ST<=1;
+				end
+				1:begin
+						case(LUT_INDEX)
+							//Initial
+						1:	LUT_DATA	<=	9'h141;
+						2:	LUT_DATA	<=	9'h142;
+						3:	LUT_DATA	<=	9'h143;
+						4:	LUT_DATA	<=	9'h144;
+						5:	LUT_DATA	<=	9'h145;
+						6:	LUT_DATA	<=	9'h146;
+						7:	LUT_DATA	<=	9'h147;
+						8:	LUT_DATA	<=	9'h148;
+						9:	LUT_DATA	<=	9'h149;
+						10:	LUT_DATA	<=	9'h14A;
+						11:	LUT_DATA	<=	9'h14B;
+						12:	LUT_DATA	<=	9'h14C;
+						13:	LUT_DATA	<=	9'h14E;
+						14:	LUT_DATA	<=	9'h14F;
+						15:	LUT_DATA	<=	9'h150;
+						16:	LUT_DATA	<=	9'h151;
+						17:	LUT_DATA	<=	9'h152;
+						18:	LUT_DATA	<=	9'h153;
+						19:	LUT_DATA	<=	9'h154;
+						20:	LUT_DATA	<=	9'h155;
+						21:	LUT_DATA	<=	9'h156;
+						22:	LUT_DATA	<=	9'h157;
+						23:	LUT_DATA	<=	9'h158;
+						24:	LUT_DATA	<=	9'h159;
+						25:	LUT_DATA	<=	9'h15A;				
+					endcase
+					mLCD_ST<=2;
+					end
+				2:	begin
 					mLCD_DATA	<=	LUT_DATA[7:0];
 					mLCD_RS		<=	LUT_DATA[8];
 					mLCD_Start	<=	1;
 					mLCD_ST		<=	1;
-				end
-				1:  begin
+					end
+				3:  begin
                     if(mLCD_Done)
 						begin
 							mLCD_Start    <=    0;
-							mLCD_ST        <=    2;                    
+							mLCD_ST        <=    3;                    
 						end
 					end
-				2:  begin
+				4:  begin
 					if(mDLY<18'h3FFFE)
 						mDLY    <=    mDLY + 1'b1;
-                    else mDLY    <=    0;
+                    else begin 
+						mDLY    <=    0;
+						mLCD_ST <= 5;
+						end
+					end
+				5:begin
+					LUT_DATA <=	9'h016;
+					mLCD_ST<=6;
+					end
+				6:begin
+					mLCD_DATA	<=	LUT_DATA[7:0];
+					mLCD_RS		<=	LUT_DATA[8];
+					mLCD_Start	<=	1;
+					mLCD_ST		<=	7;
+					end
+				7:  begin
+                    if(mLCD_Done)
+						begin
+							mLCD_Start    <=    0;
+							mLCD_ST        <=    8;                    
+						end
+					end
+				8:  begin
+					if(mDLY<18'h3FFFE)
+						mDLY    <=    mDLY + 1'b1;
+                    else begin
+							mDLY    <=    0;
+							mLCD_ST <= 0;
+						end
 					end
 			endcase
 		
@@ -288,7 +324,8 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
                     if(mLCD_Done)
 						begin
 							mLCD_Start    <=    0;
-							mLCD_ST        <=    2;                    
+							mLCD_ST        <=    2;
+							LUT_INDEX <= 0;			////				
 						end
 					end
 				2:  begin
@@ -608,13 +645,13 @@ module control_unit(HEX0,HEX1,HEX2,HEX4,HEX5,KEY,SW,CLOCK_50,LEDR, LCD_ON,	LCD_B
 			endcase
 
 			
+			end
 			
-		
 		end
 
 end
 
-	lcd lcd(
+	lcd_tb2 lcd(
 		
 		//    Host Side
 		.iDATA(mLCD_DATA),
@@ -633,80 +670,3 @@ end
 	
 endmodule 
 
-module lcd(
-	input [7:0] iDATA,
-	input iRS,
-	input iStart,
-	output reg oDone,
-	input iCLK,iRST_N,
-	//	LCD Interface
-	output [7:0] LCD_DATA,
-	output LCD_RW,
-	output reg LCD_EN,
-	output LCD_RS	);
-
-
-
-
-parameter	CLK_Divide	=	16;
-
-//	Internal Register
-reg		[4:0]	Cont;
-reg		[1:0]	ST;
-reg		preStart,mStart;
-
-/////////////////////////////////////////////
-//	Only write to LCD, bypass iRS to LCD_RS
-assign	LCD_DATA	=	iDATA; 
-assign	LCD_RW		=	1'b0;
-assign	LCD_RS		=	iRS;
-/////////////////////////////////////////////
-
-always@(posedge iCLK or negedge iRST_N)
-begin
-	if(!iRST_N)
-	begin
-		oDone	<=	1'b0;
-		LCD_EN	<=	1'b0;
-		preStart<=	1'b0;
-		mStart	<=	1'b0;
-		Cont	<=	0;
-		ST		<=	0;
-	end
-	else
-	begin
-		//////	Input Start Detect ///////
-		preStart<=	iStart;
-		if({preStart,iStart}==2'b01)
-		begin
-			mStart	<=	1'b1;
-			oDone	<=	1'b0;
-		end
-		//////////////////////////////////
-		if(mStart)
-		begin
-			case(ST)
-			0:	ST	<=	1;	//	Wait Setup
-			1:	begin
-					LCD_EN	<=	1'b1;
-					ST		<=	2;
-				end
-			2:	begin					
-					if(Cont<CLK_Divide)
-					Cont	<=	Cont + 1'b1;
-					else
-					ST		<=	3;
-				end
-			3:	begin
-					LCD_EN	<=	1'b0;
-					mStart	<=	1'b0;
-					oDone	<=	1'b1;
-					Cont	<=	0;
-					ST		<=	0;
-				end
-			endcase
-		end
-	end
-end
-
-endmodule

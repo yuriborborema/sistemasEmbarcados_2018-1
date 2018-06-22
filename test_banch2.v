@@ -1,14 +1,12 @@
 `include "ULA_tb.v"
 `include "dance_tb.v"
-`include "control_unit_tb.v"
-
-
+`include "lcd_tb.v"
 
 module test_banch();
 
 	reg clock;	
 	reg [7:0] a,b;
-	reg [17:0] SW;
+	reg [3:0] SW;
 	reg [1:0] op;
 	wire [7:0] result1,result2;
 	wire [4:0] position;
@@ -22,18 +20,7 @@ module test_banch();
 	wire LCD_RW;
     wire LCD_EN;
 	wire LCD_RS;
-	
-	wire [7:0]HEX0;
-	wire [7:0]HEX1;
-	wire [7:0]HEX2;
-	wire [7:0]HEX4;
-	wire [7:0]HEX5;
-	reg [3:0]KEY;
-	wire [17:0]LEDR; 
-	wire LCD_ON;	
-	wire LCD_BLON; 
-		
-	
+
 	ULA ULA(
 		.a(a),
 		.b(b),
@@ -42,7 +29,7 @@ module test_banch();
 		.result2(result2)
 	);
 
-	/*dance dance(
+	dance dance(
 		//.led(LEDR),
 		.SW(SW),
 		.Clock(clock),
@@ -59,25 +46,6 @@ module test_banch();
 		.LCD_RW(LCD_RW),
 		.LCD_EN(LCD_EN),
 		.LCD_RS(LCD_RS)
-	);*/
-	
-	control_unit_tb cutb1(
-		.HEX0(HEX0),
-		.HEX1(HEX1),
-		.HEX2(HEX2),
-		.HEX4(HEX4),
-		.HEX5(HEX5),
-		.KEY(KEY),
-		.SW(SW),
-		.CLOCK_50(clock),
-		.LEDR(LEDR), 
-		.LCD_ON(LCD_ON),	
-		.LCD_BLON(LCD_BLON), 
-		.LCD_RW(LCD_RW), 
-		.LCD_EN(LCD_EN), 
-		.LCD_RS(LCD_RS), 
-		.LCD_DATA(LCD_DATA)
-	
 	);
 	
 	
@@ -90,17 +58,17 @@ module test_banch();
 		a <= 0;
 		b <= 2;		
 		
-		//SW = 0; // Crescente		
+		SW = 0; // Crescente		
 
 		op = 0; // Soma
 		#500 op = 1; // sub
 		#500 op = 2; // mult
 		#500 op = 3; // div		
 	
-		//#100 SW = 1; // Decrescente		
-		//#100 SW = 2; // Vai e volta
+		#100 SW = 1; // Decrescente		
+		#100 SW = 2; // Vai e volta
 		
-		/*iDATA = 8'h0E;
+		iDATA = 8'h0F;
 		iRS = 0;
 		#100 iStart = 1;
 		if(oDone==1)iStart=0;
@@ -108,23 +76,7 @@ module test_banch();
 		#500 iDATA = 8'h41;
 		iRS = 1;
 		#100 iStart = 1;
-		if(oDone==1)iStart=0;*/
-		
-		#200;
-		SW[17] = 0;
-		SW[16] = 0;
-		SW[15] = 0;
-		#300;
-		SW[17] = 0;
-		SW[16] = 0;
-		SW[15] = 1;
-		#800;
-		SW[17] = 1;
-		SW[16] = 0;
-		SW[15] = 1;
-		
-		
-		
+		if(oDone==1)iStart=0;
 		
 		
 		#2000  $finish;		
@@ -132,7 +84,7 @@ module test_banch();
 	
 	// Clock
 	always begin
-		#2 clock <= ~clock;
+		#10 clock <= ~clock;
 	end
 
 	// LEDs
@@ -146,7 +98,5 @@ module test_banch();
 		else a <= 0;
 		#10;		
 	end
-	
-	
 	
 endmodule
