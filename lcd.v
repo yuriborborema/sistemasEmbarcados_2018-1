@@ -1,3 +1,6 @@
+// Módulo de controle do LCD.
+// Recebe todos os dados, atribui-os as variaveis do LCD e alterna o enable entre 0, 1 e 0 (pois é assim que o LCD recebe a ordem para executar um comando).
+
 module lcd(
 	input [7:0] iDATA,
 	input iRS,
